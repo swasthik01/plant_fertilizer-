@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant-Specific Fertilizer & Soil Recommendation System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-seedling"></i> AgriSmart
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#soil-detection">Soil Detection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fertilizer">Fertilizer Guide</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#query">Ask Question</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Smart Agriculture with AI</h1>
+                    <p class="lead mb-4">
+                        Get personalized soil analysis and fertilizer recommendations powered by Machine Learning and NLP.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#soil-detection" class="btn btn-success btn-lg">
+                            <i class="fas fa-camera"></i> Analyze Soil
+                        </a>
+                        <a href="#fertilizer" class="btn btn-outline-success btn-lg">
+                            <i class="fas fa-leaf"></i> Get Recommendations
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600" 
+                         alt="Agriculture" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Services</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-microscope fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Soil Detection</h5>
+                            <p class="card-text">
+                                AI-powered image analysis to identify your soil type with high accuracy
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-flask fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Fertilizer Recommendations</h5>
+                            <p class="card-text">
+                                Customized fertilizer plans based on soil nutrients and crop requirements
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-language fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Multilingual Support</h5>
+                            <p class="card-text">
+                                Available in 10+ languages including Hindi, Marathi, Telugu, and more
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Soil Detection Section -->
+    <section id="soil-detection" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Soil Type Detection</h2>
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="soilDetectionForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="soilImage" class="form-label">Upload Soil Image</label>
+                                    <input type="file" class="form-control" id="soilImage" 
+                                           accept="image/*" required>
+                                    <div class="form-text">
+                                        Upload a clear image of your soil sample
+                                    </div>
+                                </div>
+                                
+                                <div id="imagePreview" class="mb-3 text-center" style="display: none;">
+                                    <img id="previewImg" src="" class="img-fluid rounded" 
+                                         style="max-height: 300px;">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-search"></i> Detect Soil Type
+                                </button>
+                            </form>
+                            
+                            <div id="soilResult" class="mt-4" style="display: none;">
+                                <div class="alert alert-success">
+                                    <h5 class="alert-heading">
+                                        <i class="fas fa-check-circle"></i> Detection Complete
+                                    </h5>
+                                    <hr>
+                                    <div id="soilResultContent"></div>
+                                </div>
+                            </div>
+                            
+                            <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Analyzing soil image...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fertilizer Recommendation Section -->
+    <section id="fertilizer" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Complete Recommendation System</h2>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="fertilizerForm" enctype="multipart/form-data">
+                                <div class="row">
+                                    <!-- Image Upload -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="completeImage" class="form-label">Soil Image</label>
+                                        <input type="file" class="form-control" id="completeImage" 
+                                               accept="image/*" required>
+                                    </div>
+                                    
+                                    <!-- Crop Selection -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="crop" class="form-label">Select Crop</label>
+                                        <select class="form-select" id="crop" required>
+                                            <option value="">Choose...</option>
+                                            <option value="Rice">Rice</option>
+                                            <option value="Wheat">Wheat</option>
+                                            <option value="Maize">Maize</option>
+                                            <option value="Cotton">Cotton</option>
+                                            <option value="Sugarcane">Sugarcane</option>
+                                            <option value="Potato">Potato</option>
+                                            <option value="Tomato">Tomato</option>
+                                            <option value="Onion">Onion</option>
+                                            <option value="Cabbage">Cabbage</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Soil Parameters -->
+                                    <div class="col-md-4 mb-3">
+                                        <label for="pH" class="form-label">pH Level</label>
+                                        <input type="number" class="form-control" id="pH" 
+                                               step="0.1" min="0" max="14" value="7.0" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="nitrogen" class="form-label">Nitrogen (kg/ha)</label>
+                                        <input type="number" class="form-control" id="nitrogen" 
+                                               step="0.1" min="0" value="50" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="phosphorus" class="form-label">Phosphorus (kg/ha)</label>
+                                        <input type="number" class="form-control" id="phosphorus" 
+                                               step="0.1" min="0" value="30" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="potassium" class="form-label">Potassium (kg/ha)</label>
+                                        <input type="number" class="form-control" id="potassium" 
+                                               step="0.1" min="0" value="40" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="fieldArea" class="form-label">Field Area (hectares)</label>
+                                        <input type="number" class="form-control" id="fieldArea" 
+                                               step="0.1" min="0.1" value="1.0" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="growthStage" class="form-label">Growth Stage</label>
+                                        <select class="form-select" id="growthStage" required>
+                                            <option value="Vegetative">Vegetative</option>
+                                            <option value="Flowering">Flowering</option>
+                                            <option value="Fruiting">Fruiting</option>
+                                            <option value="Ripening">Ripening</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="preferOrganic">
+                                            <label class="form-check-label" for="preferOrganic">
+                                                Prefer organic fertilizers
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-magic"></i> Get Complete Recommendation
+                                </button>
+                            </form>
+                            
+                            <div id="fertilizerResult" class="mt-4" style="display: none;">
+                                <!-- Results will be displayed here -->
+                            </div>
+                            
+                            <div id="fertilizerLoading" class="text-center mt-4" style="display: none;">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Generating recommendations...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Query Section -->
+    <section id="query" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Ask a Question</h2>
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="queryForm">
+                                <div class="mb-3">
+                                    <label for="queryInput" class="form-label">Your Question</label>
+                                    <textarea class="form-control" id="queryInput" rows="4" 
+                                              placeholder="Ask in English, Hindi, or any supported language..." required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-paper-plane"></i> Submit Query
+                                </button>
+                            </form>
+                            
+                            <div id="queryResult" class="mt-4" style="display: none;">
+                                <!-- Query result will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2025 AgriSmart - Plant-Specific Fertilizer & Soil Recommendation System</p>
+            <p>Powered by Machine Learning and Natural Language Processing</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>

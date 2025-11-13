@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Plant-Specific Fertilizer & Soil Recommendation System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Embedded CSS */
+        :root {
+            --primary-green: #28a745;
+            --dark-green: #1e7e34;
+            --light-green: #d4edda;
+            --text-dark: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+        }
+
+        .hero-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .hero-section h1 {
+            font-weight: 700;
+        }
+
+        .hero-section img {
+            animation: fadeInRight 1s ease-in-out;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .features-section {
+            padding: 80px 0;
+        }
+
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .feature-icon {
+            transform: scale(1.2);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        #soilImage, #completeImage {
+            border: 2px dashed var(--primary-green);
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #soilImage:hover, #completeImage:hover {
+            border-color: var(--dark-green);
+            background-color: var(--light-green);
+        }
+
+        #imagePreview img {
+            border: 3px solid var(--primary-green);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-card {
+            border-left: 4px solid var(--primary-green);
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-card h6 {
+            color: var(--dark-green);
+            font-weight: 600;
+        }
+
+        .progress {
+            height: 25px;
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-outline-success {
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        .btn-outline-success:hover {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .fertilizer-item {
+            background-color: white;
+            color: var(--text-dark);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .fertilizer-item h6 {
+            color: var(--dark-green);
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffc107 !important;
+        }
+
+        footer {
+            margin-top: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .features-section {
+                padding: 40px 0;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert {
+            animation: slideDown 0.5s ease;
+        }
+
+        .nutrient-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .nutrient-box h5 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .nutrient-box p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        .soil-type-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .soil-type-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .confidence-badge {
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .tips-section {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .tips-section h5 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .tips-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .tips-section li {
+            padding: 5px 0;
+            color: #856404;
+        }
+
+        .tips-section li:before {
+            content: "✓ ";
+            color: var(--primary-green);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-seedling"></i> AgriSmart
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#soil-detection">Soil Detection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fertilizer">Fertilizer Guide</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#query">Ask Question</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Smart Agriculture with AI</h1>
+                    <p class="lead mb-4">
+                        Get personalized soil analysis and fertilizer recommendations powered by Machine Learning and NLP.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#soil-detection" class="btn btn-success btn-lg">
+                            <i class="fas fa-camera"></i> Analyze Soil
+                        </a>
+                        <a href="#fertilizer" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-leaf"></i> Get Recommendations
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600" 
+                         alt="Agriculture" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Services</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-microscope fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Soil Detection</h5>
+                            <p class="card-text">
+                                AI-powered image analysis to identify your soil type with high accuracy
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-flask fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Fertilizer Recommendations</h5>
+                            <p class="card-text">
+                                Customized fertilizer plans based on soil nutrients and crop requirements
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-language fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Multilingual Support</h5>
+                            <p class="card-text">
+                                Available in 10+ languages including Hindi, Marathi, Telugu, and more
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Soil Detection Section -->
+    <section id="soil-detection" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Soil Type Detection</h2>
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="soilDetectionForm">
+                                <div class="mb-3">
+                                    <label for="soilImage" class="form-label">Upload Soil Image</label>
+                                    <input type="file" class="form-control" id="soilImage" 
+                                           accept="image/*" required>
+                                    <div class="form-text">
+                                        Upload a clear image of your soil sample
+                                    </div>
+                                </div>
+                                
+                                <div id="imagePreview" class="mb-3 text-center" style="display: none;">
+                                    <img id="previewImg" src="" class="img-fluid rounded" 
+                                         style="max-height: 300px;">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-search"></i> Detect Soil Type
+                                </button>
+                            </form>
+                            
+                            <div id="soilResult" class="mt-4" style="display: none;"></div>
+                            
+                            <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Analyzing soil image...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fertilizer Recommendation Section -->
+    <section id="fertilizer" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Complete Recommendation System</h2>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="fertilizerForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="completeImage" class="form-label">Soil Image</label>
+                                        <input type="file" class="form-control" id="completeImage" 
+                                               accept="image/*" required>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="crop" class="form-label">Select Crop</label>
+                                        <select class="form-select" id="crop" required>
+                                            <option value="">Choose...</option>
+                                            <option value="Rice">Rice</option>
+                                            <option value="Wheat">Wheat</option>
+                                            <option value="Maize">Maize</option>
+                                            <option value="Cotton">Cotton</option>
+                                            <option value="Sugarcane">Sugarcane</option>
+                                            <option value="Potato">Potato</option>
+                                            <option value="Tomato">Tomato</option>
+                                            <option value="Onion">Onion</option>
+                                            <option value="Cabbage">Cabbage</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="pH" class="form-label">pH Level</label>
+                                        <input type="number" class="form-control" id="pH" 
+                                               step="0.1" min="0" max="14" value="7.0" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="nitrogen" class="form-label">Nitrogen (kg/ha)</label>
+                                        <input type="number" class="form-control" id="nitrogen" 
+                                               step="0.1" min="0" value="50" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="phosphorus" class="form-label">Phosphorus (kg/ha)</label>
+                                        <input type="number" class="form-control" id="phosphorus" 
+                                               step="0.1" min="0" value="30" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="potassium" class="form-label">Potassium (kg/ha)</label>
+                                        <input type="number" class="form-control" id="potassium" 
+                                               step="0.1" min="0" value="40" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="fieldArea" class="form-label">Field Area (hectares)</label>
+                                        <input type="number" class="form-control" id="fieldArea" 
+                                               step="0.1" min="0.1" value="1.0" required>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="growthStage" class="form-label">Growth Stage</label>
+                                        <select class="form-select" id="growthStage" required>
+                                            <option value="Vegetative">Vegetative</option>
+                                            <option value="Flowering">Flowering</option>
+                                            <option value="Fruiting">Fruiting</option>
+                                            <option value="Ripening">Ripening</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="preferOrganic">
+                                            <label class="form-check-label" for="preferOrganic">
+                                                Prefer organic fertilizers
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-magic"></i> Get Complete Recommendation
+                                </button>
+                            </form>
+                            
+                            <div id="fertilizerResult" class="mt-4" style="display: none;"></div>
+                            
+                            <div id="fertilizerLoading" class="text-center mt-4" style="display: none;">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Generating recommendations...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Query Section -->
+    <section id="query" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Ask a Question</h2>
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="queryForm">
+                                <div class="mb-3">
+                                    <label for="queryInput" class="form-label">Your Question</label>
+                                    <textarea class="form-control" id="queryInput" rows="4" 
+                                              placeholder="Ask in English, Hindi, or any supported language..." required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-paper-plane"></i> Submit Query
+                                </button>
+                            </form>
+                            
+                            <div id="queryResult" class="mt-4" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2025 AgriSmart - Plant-Specific Fertilizer & Soil Recommendation System</p>
+            <p>Powered by Machine Learning and Natural Language Processing</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Embedded JavaScript with Mock Backend
+        
+        // Mock Backend Data
+        const MOCK_DATA = {
+            soilTypes: {
+                'Sandy': { confidence: 0.85, quality: 'Good', description: 'Light, dry, warm, acidic, and low in nutrients' },
+                'Loamy': { confidence: 0.92, quality: 'Excellent', description: 'Ideal soil with good drainage and nutrient retention' },
+                'Clayey': { confidence: 0.78, quality: 'Moderate', description: 'Heavy, holds water, slow to warm in spring' },
+                'Silty': { confidence: 0.88, quality: 'Good', description: 'Light, moisture-retentive, fertile with good drainage' },
+                'Peaty': { confidence: 0.75, quality: 'Moderate', description: 'High in organic matter, acidic, retains moisture' },
+                'Chalky': { confidence: 0.80, quality: 'Good', description: 'Alkaline, stony, free-draining' }
+            },
+            
+            cropRequirements: {
+                'Rice': { N: [60, 80], P: [30, 40], K: [30, 40], pH: [5.5, 6.5] },
+                'Wheat': { N: [80, 100], P: [40, 50], K: [30, 40], pH: [6.0, 7.0] },
+                'Maize': { N: [100, 120], P: [50, 60], K: [40, 50], pH: [5.5, 7.0] },
+                'Cotton': { N: [100, 120], P: [40, 50], K: [40, 50], pH: [6.0, 7.5] },
+                'Sugarcane': { N: [200, 250], P: [60, 80], K: [80, 100], pH: [6.0, 7.5] },
+                'Potato': { N: [100, 150], P: [60, 80], K: [100, 120], pH: [5.0, 6.0] },
+                'Tomato': { N: [120, 150], P: [50, 70], K: [80, 100], pH: [6.0, 7.0] },
+                'Onion': { N: [80, 100], P: [40, 50], K: [60, 80], pH: [6.0, 7.0] },
+                'Cabbage': { N: [100, 120], P: [50, 60], K: [80, 100], pH: [6.0, 7.5] }
+            }
+        };
+
+        // Mock Backend Functions
+        function detectSoilType() {
+            const soilTypes = Object.keys(MOCK_DATA.soilTypes);
+            const randomSoil = soilTypes[Math.floor(Math.random() * soilTypes.length)];
+            const soilData = MOCK_DATA.soilTypes[randomSoil];
+            
+            return {
+                soil_type: randomSoil,
+                confidence: soilData.confidence,
+                quality_rating: soilData.quality,
+                description: soilData.description,
+                all_probabilities: Object.fromEntries(
+                    soilTypes.map(type => [type, type === randomSoil ? soilData.confidence : (Math.random() * 0.1)])
+                ),
+                color_features: {
+                    mean_r: Math.random() * 255,
+                    mean_g: Math.random() * 255,
+                    mean_b: Math.random() * 255
+                },
+                texture_features: {
+                    variance: Math.random() * 1000,
+                    roughness: Math.random() * 100
+                }
+            };
+        }
+
+        function calculateDeficit(crop, nitrogen, phosphorus, potassium) {
+            const req = MOCK_DATA.cropRequirements[crop];
+            return {
+                N_deficit: Math.max(0, (req.N[0] + req.N[1]) / 2 - nitrogen),
+                P_deficit: Math.max(0, (req.P[0] + req.P[1]) / 2 - phosphorus),
+                K_deficit: Math.max(0, (req.K[0] + req.K[1]) / 2 - potassium)
+            };
+        }
+
+        function generateRecommendations(deficit, soilType, crop, fieldArea) {
+            const recommendations = [];
+            
+            if (deficit.N_deficit > 30) {
+                recommendations.push({
+                    fertilizer: 'Urea',
+                    quantity: `${(deficit.N_deficit / 0.46 * fieldArea).toFixed(1)} kg/ha`,
+                    nutrients: `Provides ${(deficit.N_deficit * fieldArea).toFixed(1)} kg N`,
+                    application: 'Split: 50% basal, 25% at 30 DAP, 25% at 60 DAP'
+                });
+            }
+            
+            if (deficit.P_deficit > 20) {
+                recommendations.push({
+                    fertilizer: 'DAP',
+                    quantity: `${(deficit.P_deficit / 0.46 * fieldArea).toFixed(1)} kg/ha`,
+                    nutrients: `Provides ${(deficit.P_deficit * fieldArea).toFixed(1)} kg P`,
+                    application: 'Apply as basal dose before sowing'
+                });
+            }
+            
+            if (deficit.K_deficit > 20) {
+                recommendations.push({
+                    fertilizer: 'MOP',
+                    quantity: `${(deficit.K_deficit / 0.60 * fieldArea).toFixed(1)} kg/ha`,
+                    nutrients: `Provides ${(deficit.K_deficit * fieldArea).toFixed(1)} kg K`,
+                    application: '50% basal, 50% at flowering'
+                });
+            }
+            
+            if (deficit.N_deficit > 20 && deficit.P_deficit > 20 && deficit.K_deficit > 20) {
+                recommendations.push({
+                    fertilizer: 'NPK 19:19:19',
+                    quantity: `${((deficit.N_deficit + deficit.P_deficit + deficit.K_deficit) / 0.57 * fieldArea).toFixed(1)} kg/ha`,
+                    nutrients: 'Balanced nutrition',
+                    application: 'Apply as basal dose'
+                });
+            }
+            
+            return recommendations.length > 0 ? recommendations : [{
+                fertilizer: 'Balanced NPK 10:10:10',
+                quantity: `${(50 * fieldArea).toFixed(1)} kg/ha`,
+                nutrients: 'Maintenance dose',
+                application: 'Apply as per crop requirement'
+            }];
+        }
+
+        // Soil Detection Form Handler
+        document.getElementById('soilDetectionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('soilResult').style.display = 'none';
+            
+            setTimeout(() => {
+                const result = detectSoilType();
+                displaySoilResult(result);
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }, 1500);
+        });
+
+        // Image Preview
+        document.getElementById('soilImage').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Display Soil Detection Result
+        function displaySoilResult(result) {
+            const resultDiv = document.getElementById('soilResult');
+            
+            const html = `
+                <div class="alert alert-success">
+                    <h5 class="alert-heading"><i class="fas fa-check-circle"></i> Detection Complete</h5>
+                    <hr>
+                    <div class="soil-type-card mb-3">
+                        <h3><i class="fas fa-mountain"></i> ${result.soil_type}</h3>
+                        <div class="confidence-badge">
+                            <strong>Confidence:</strong> ${(result.confidence * 100).toFixed(2)}%
+                        </div>
+                        <p class="mt-2">${result.description}</p>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-chart-bar"></i> Soil Type Probabilities</h6>
+                            ${Object.entries(result.all_probabilities).map(([type, prob]) => `
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>${type}</span>
+                                        <span>${(prob * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: ${prob * 100}%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="result-card">
+                                <h6><i class="fas fa-info-circle"></i> Soil Properties</h6>
+                                <p><strong>Quality Rating:</strong> ${result.quality_rating}</p>
+                                <p><strong>Color Features:</strong></p>
+                                <ul>
+                                    <li>Red: ${result.color_features.mean_r.toFixed(2)}</li>
+                                    <li>Green: ${result.color_features.mean_g.toFixed(2)}</li>
+                                    <li>Blue: ${result.color_features.mean_b.toFixed(2)}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+        }
+
+        // Complete Fertilizer Recommendation Form Handler
+        document.getElementById('fertilizerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            document.getElementById('fertilizerLoading').style.display = 'block';
+            document.getElementById('fertilizerResult').style.display = 'none';
+            
+            setTimeout(() => {
+                const crop = document.getElementById('crop').value;
+                const nitrogen = parseFloat(document.getElementById('nitrogen').value);
+                const phosphorus = parseFloat(document.getElementById('phosphorus').value);
+                const potassium = parseFloat(document.getElementById('potassium').value);
+                const pH = parseFloat(document.getElementById('pH').value);
+                const fieldArea = parseFloat(document.getElementById('fieldArea').value);
+                const growthStage = document.getElementById('growthStage').value;
+                
+                const soilDetection = detectSoilType();
+                const deficit = calculateDeficit(crop, nitrogen, phosphorus, potassium);
+                const recommendations = generateRecommendations(deficit, soilDetection.soil_type, crop, fieldArea);
+                
+                const result = {
+                    soil_detection: soilDetection,
+                    fertilizer_recommendation: {
+                        crop: crop,
+                        soil_type: soilDetection.soil_type,
+                        field_area: `${fieldArea} hectare(s)`,
+                        growth_stage: growthStage,
+                        nutrient_deficit: deficit,
+                        fertilizer_recommendations: recommendations,
+                        deficit_summary: {
+                            N_deficit: `${deficit.N_deficit.toFixed(1)} kg/ha`,
+                            P_deficit: `${deficit.P_deficit.toFixed(1)} kg/ha`,
+                            K_deficit: `${deficit.K_deficit.toFixed(1)} kg/ha`
+                        },
+                        pH_recommendation: pH < 6.0 ? 'Add lime to increase pH' : pH > 7.5 ? 'Add sulfur to decrease pH' : 'pH is optimal',
+                        soil_specific_advice: [
+                            'Apply organic matter to improve soil health',
+                            'Follow recommended fertilizer application',
+                            'Monitor soil moisture regularly'
+                        ],
+                        timing_advice: growthStage === 'Vegetative' ? 'High nitrogen requirement for growth' : 'Balanced NPK needed',
+                        additional_tips: [
+                            'Conduct soil test every season',
+                            'Apply micronutrients based on deficiency',
+                            'Practice crop rotation for better soil health'
+                        ]
+                    }
+                };
+                
+                displayFertilizerResult(result);
+                document.getElementById('fertilizerLoading').style.display = 'none';
+            }, 2000);
+        });
+
+        // Display Fertilizer Recommendation Result
+        function displayFertilizerResult(data) {
+            const resultDiv = document.getElementById('fertilizerResult');
+            const soilInfo = data.soil_detection;
+            const recommendation = data.fertilizer_recommendation;
+            
+            const html = `
+                <div class="alert alert-success">
+                    <h4 class="alert-heading"><i class="fas fa-check-circle"></i> Complete Analysis & Recommendation</h4>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-microscope"></i> Detected Soil Type</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="text-success">${soilInfo.soil_type}</h3>
+                        <p><strong>Confidence:</strong> ${(soilInfo.confidence * 100).toFixed(2)}%</p>
+                        <p><strong>Quality:</strong> ${soilInfo.quality_rating}</p>
+                    </div>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-dark">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Nutrient Deficit Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="nutrient-box">
+                                    <h5>Nitrogen</h5>
+                                    <p>${recommendation.deficit_summary.N_deficit}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="nutrient-box">
+                                    <h5>Phosphorus</h5>
+                                    <p>${recommendation.deficit_summary.P_deficit}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="nutrient-box">
+                                    <h5>Potassium</h5>
+                                    <p>${recommendation.deficit_summary.K_deficit}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-flask"></i> Recommended Fertilizers for ${recommendation.crop}</h5>
+                    </div>
+                    <div class="card-body">
+                        ${recommendation.fertilizer_recommendations.map((fert, index) => `
+                            <div class="fertilizer-item">
+                                <h6>${index + 1}. ${fert.fertilizer}</h6>
+                                <p><strong>Quantity:</strong> ${fert.quantity}</p>
+                                <p><strong>Nutrients Provided:</strong> ${fert.nutrients}</p>
+                                <p><strong>Application:</strong> ${fert.application}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle"></i> pH Management</h6>
+                    <p>${recommendation.pH_recommendation}</p>
+                </div>
+                
+                <div class="tips-section">
+                    <h5><i class="fas fa-star"></i> Additional Tips</h5>
+                    <ul>
+                        ${recommendation.additional_tips.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Query Processing Form Handler
+        document.getElementById('queryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = document.getElementById('queryInput').value;
+            
+            // Simple mock NLP processing
+            const detectLanguage = (text) => {
+                if (/[\u0900-\u097F]/.test(text)) return 'Hindi';
+                if (/[\u0980-\u09FF]/.test(text)) return 'Bengali';
+                return 'English';
+            };
+            
+            const detectIntent = (text) => {
+                const lower = text.toLowerCase();
+                if (lower.includes('soil') || lower.includes('मिट्टी')) return 'soil_health';
+                if (lower.includes('fertilizer') || lower.includes('खाद')) return 'fertilizer_recommendation';
+                if (lower.includes('crop') || lower.includes('फसल')) return 'crop_selection';
+                return 'general_query';
+            };
+            
+            const result = {
+                original_query: query,
+                language: detectLanguage(query),
+                intent: detectIntent(query),
+                entities: {
+                    crop: query.match(/(rice|wheat|maize|cotton|धान|गेहूं)/i)?.[0] || 'Not detected',
+                    soil_type: query.match(/(sandy|loamy|clayey|रेतीली|दोमट)/i)?.[0] || 'Not detected'
+                }
+            };
+            
+            displayQueryResult(result);
+        });
+
+        // Display Query Result
+        function displayQueryResult(result) {
+            const resultDiv = document.getElementById('queryResult');
+            
+            const html = `
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-language"></i> Query Analysis</h5>
+                    <hr>
+                    <p><strong>Detected Language:</strong> ${result.language}</p>
+                    <p><strong>Intent:</strong> ${result.intent.replace('_', ' ').toUpperCase()}</p>
+                    <p><strong>Detected Crop:</strong> ${result.entities.crop}</p>
+                    <p><strong>Detected Soil Type:</strong> ${result.entities.soil_type}</p>
+                    
+                    <div class="alert alert-success mt-3">
+                        <p class="mb-0">
+                            <i class="fas fa-info-circle"></i> 
+                            Your query has been analyzed. For specific recommendations, please use the 
+                            Complete Recommendation form above with detailed soil parameters.
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+        }
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

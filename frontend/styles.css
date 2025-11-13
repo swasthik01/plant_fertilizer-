@@ -1,0 +1,301 @@
+/* Custom CSS for AgriSmart Application */
+
+:root {
+    --primary-green: #28a745;
+    --dark-green: #1e7e34;
+    --light-green: #d4edda;
+    --text-dark: #212529;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hero-section h1 {
+    font-weight: 700;
+}
+
+.hero-section img {
+    animation: fadeInRight 1s ease-in-out;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Features Section */
+.features-section {
+    padding: 80px 0;
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .feature-icon {
+    transform: scale(1.2);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Soil Detection Section */
+#soilImage, #completeImage {
+    border: 2px dashed var(--primary-green);
+    padding: 10px;
+    cursor: pointer;
+}
+
+#soilImage:hover, #completeImage:hover {
+    border-color: var(--dark-green);
+    background-color: var(--light-green);
+}
+
+#imagePreview img {
+    border: 3px solid var(--primary-green);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Result Cards */
+.result-card {
+    border-left: 4px solid var(--primary-green);
+    background-color: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.result-card h6 {
+    color: var(--dark-green);
+    font-weight: 600;
+}
+
+/* Progress Bars */
+.progress {
+    height: 25px;
+    border-radius: 8px;
+}
+
+.progress-bar {
+    background-color: var(--primary-green);
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-success {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline-success {
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+/* Loading Spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Form Inputs */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Recommendation Cards */
+.recommendation-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.fertilizer-item {
+    background-color: white;
+    color: var(--text-dark);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-green);
+}
+
+.fertilizer-item h6 {
+    color: var(--dark-green);
+}
+
+/* Badges */
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #ffc107 !important;
+}
+
+/* Footer */
+footer {
+    margin-top: 80px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .features-section {
+        padding: 40px 0;
+    }
+}
+
+/* Alert Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert {
+    animation: slideDown 0.5s ease;
+}
+
+/* Nutrient Deficit Display */
+.nutrient-box {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.nutrient-box h5 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.nutrient-box p {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+}
+
+/* Soil Type Card */
+.soil-type-card {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.soil-type-card h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.confidence-badge {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* Tips Section */
+.tips-section {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.tips-section h5 {
+    color: #856404;
+    margin-bottom: 15px;
+}
+
+.tips-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.tips-section li {
+    padding: 5px 0;
+    color: #856404;
+}
+
+.tips-section li:before {
+    content: "✓ ";
+    color: var(--primary-green);
+    font-weight: bold;
+    margin-right: 8px;
+}
